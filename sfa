@@ -1,0 +1,323 @@
+#Screenfetch for Android by aspadm (2016)
+#MIT license
+#dependings: root(for screenshots), busybox(?)
+sfav="0.1.0 alpha"
+
+#Help section
+if [[ "$1" == '-h' ]]; then
+echo "Screenfetch for Android v$sfav"
+echo "Aspadm's work, MIT license"
+echo
+echo "usage: sfa <-h>    - show help (this message)"
+echo "   or: sfa         - show system info"
+echo "   or: sfa <c><h>  - also take screenshot(need root)"
+echo "                      c - console"
+echo "                      h - homescreen"
+echo "example: sfa ch - show system info and take 2 screenshot to your /sdcard"
+exit 0
+fi
+
+
+#Initialization
+input keyevent BACK
+clear
+
+
+#Detection section
+model=$(getprop ro.product.manufacturer)" "$(getprop ro.product.model)
+
+
+usern=$(id -u)
+usern=${usern#?*"="}
+usern=${usern%%'('*?}
+if [[ "$usern" == "0" ]]; then
+root=1
+usern=$(pm list users|grep -m 1 "UserInfo")
+usern=${usern#?*:}
+usern=${usern%:*?}
+else
+usern=$USER
+fi
+
+
+hostn=$(getprop net.hostname)
+
+
+os="Android "$(getprop ro.build.version.release)
+api=$(getprop ro.build.version.sdk)
+
+case "$api" in
+3)
+kname=Cupcake
+;;
+4)
+kname=Donut
+;;
+5)
+kname=Eclair
+;;
+6)
+kname=Eclair
+;;
+7)
+kname=Eclair
+;;
+8)
+kname=Froyo
+;;
+9)
+kname=Gingerbread
+;;
+10)
+kname=Gingerbread
+;;
+11)
+kname=Honeycomb
+;;
+12)
+kname=Honeycomb
+;;
+13)
+kname=Honeycomb
+;;
+14)
+kname=ICS
+;;
+15)
+kname=ICS
+;;
+16)
+kname=JellyBean
+;;
+17)
+kname=JellyBean
+;;
+18)
+kname=JellyBean
+;;
+19)
+kname=KitKat
+;;
+21)
+kname=Lolipop
+;;
+22)
+kname=Lolipop
+;;
+23)
+kname=Marshmallow
+;;
+24)
+kname=Nougat
+;;
+esac
+
+kname=" "$kname
+api=" (API "$api")"
+
+if [[ $(getprop ro.cm.version) != "" ]]; then
+rom=$(getprop ro.cm.version)
+rom=${rom%%'-'*?}
+rom="CyanogenMod "$rom'/'
+os=$rom$os
+else
+os=$os$kname$api
+fi
+
+
+ker=$(getprop ro.product.cpu.abi)" "$(cat /proc/sys/kernel/ostype)" "$(cat /proc/sys/kernel/osrelease)
+
+
+upt=$(cat /proc/uptime)
+sec=${upt%%'.'*?}
+let "day=(sec/3600/24)"
+let "sec-=day*24*3600"
+let "hour=(sec/3600)"
+let "sec-=hour*3600"
+let "min=(sec/60)"
+if [[ "$day" -eq "0" ]]; then
+upt=$hour"h "$min"m"
+else
+upt=$day"d "$hour"h "$min"m"
+fi
+
+
+cpuid=$(cat /proc/cpuinfo|grep "Hardware")
+cpuid=${cpuid##?*:}
+cpuc=$(cat /proc/cpuinfo|grep -c "Features")
+cpuf=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq)
+
+let "cpuf/=1000"
+cpuf=$cpuf"MHz"
+
+if [[ $cpuc ==  "1" ]]; then
+cpuid=$cpuid' @ '$cpuf
+else
+cpuid=$cpuid' ('$cpuc') @'$cpuf
+fi
+
+
+chips=$(getprop ro.board.platform)" "$(getprop ro.product.board)
+
+
+instp=$(pm list packages|grep package -c)
+
+
+disp=$(dumpsys display|grep -m 1 "mPhys")
+disp=${disp##?*'{'}
+disp=${disp%%,*?}
+if [[ "$disp" == "" ]]; then
+disp=$(wm size|grep -m 1 "[Pp]hysical")
+disp=${disp##?* }
+fi
+
+
+bbx=$(ls /system/xbin|grep "busybox" -c)$(ls /system/bin|grep "busybox" -c)
+if [[ "$bbx" != "00" ]]; then
+bbx=$(busybox|grep "BusyBox" -m 1)
+bbx=${bbx%%'-'*?}
+bbx=${bbx#B*v}
+if [[ "$bbx" == "" ]]; then
+bbx="can't detect"
+fi
+else
+bbx="not installed"
+fi
+
+
+launcher=$(dumpsys activity processes|grep -m 1 "mHomeProcess")
+launcher=${launcher## *:}
+launcher=${launcher%%/*?}
+
+
+case "$launcher" in
+com.android.launcher)
+launcher="Stock Android"
+;;
+com.example)
+launcher="test"
+;;
+com.asus.launcher)
+launcher="ZenUI Launcher"
+;;
+com.cyanogenmod.trebuchet)
+launcher="Trebuchet Launcher"
+;;
+org.adw.launcher)
+launcher="ADW.Launcher"
+;;
+com.teslacoilsw.launcher)
+launcher="Nova Launcher"
+;;
+com.anddoes.launcher)
+launcher="Apex Launcher"
+;;
+ginlemon.flower*)
+launcher="Smart Launcher"
+;;
+com.gau.go.launcherex)
+launcher="GO Launcher EX"
+;;
+com.google.android.launcher)
+launcher="Google Now"
+;;
+com.blackberry.blackberrylauncher)
+launcher="BlackBerry Launcher"
+;;
+com.ksmobile.launcher)
+launcher="CM Launcher 3D"
+;;
+com.microsoft.launcher)
+launcher="Arrow Launcher"
+;;
+com.apusapps.launcher)
+launcher="APUS Launcher"
+;;
+home.solo.launcher*)
+launcher="Solo Launcher"
+;;
+com.yandex.launcher)
+launcher="Yandex Launcher"
+;;
+com.gtp.nextlauncher*)
+launcher="Next Launcher 3D"
+;;
+com.hola.launcher)
+launcher="Hola Launcher"
+;;
+com.dlto.atom.launcher)
+launcher="Atom Launcher"
+;;
+com.cma.launcher*)
+launcher="C Launcher"
+;;
+com.actionlauncher*)
+launcher="Action Launcher"
+;;
+*)
+if [[ "$launcher" == "" ]]; then
+launcher="can't detect"
+fi
+;;
+esac
+
+
+ram=$(grep -m 1 "MemTotal" "/proc/meminfo")
+ramf=$(grep -m 1 "MemFree" "/proc/meminfo")
+ramc=$(grep -m 1 "Cached" "/proc/meminfo")
+ram=${ram% *?}
+ram=${ram##M* }
+ramf=${ramf% *?}
+ramf=${ramf##M* }
+ramc=${ramc% *?}
+ramc=${ramc##C* }
+let "ramf=(ram-ramf-ramc)/1024"
+let "ram/=1024"
+ram=$ramf'MB / '$ram"MB"
+
+
+#Info printing
+echo -e '\E[32;40m'
+
+echo -e "\E[32;40m         ╲▂▃▄▄▄▃▂╱          \033[1m$USER@$HOSTNAME\033[0m "
+echo -e "\E[32;40m        ▄▇███████▇▄         ($usern@$hostn)"
+echo -e "\E[32;40m       \E[30;42m▌\E[32;47m██▃█████▃██\E[32;40m▌        \033[1mOS: \033[0m\E[37;40m$os"
+echo -e "\E[32;40m       █████████████        \033[1mKernel: \033[0m\E[37;40m$ker"
+echo -e "\E[32;40m   ▆█▆ ▆▆▆▆▆▆▆▆▆▆▆▆▆ ▆█▆    \033[1mUptime: \033[0m\E[37;40m$upt"
+echo -e "\E[32;40m   ███ █████████████ ███    \033[1mPackages: \033[0m\E[37;40m$instp"
+echo -e "\E[32;40m   ███ █████████████ ███    \033[1mBusybox: \033[0m\E[37;40m$bbx"
+echo -e "\E[32;40m   ███ █████████████ ███    \033[1mDevice: \033[0m\E[37;40m$model"
+echo -e "\E[32;40m   ███ █████████████ ███    \033[1mResolution: \033[0m\E[37;40m$disp"
+echo -e "\E[32;40m       █████████████        \033[1mLauncher: \033[0m\E[37;40m$launcher"
+echo -e "\E[32;40m         ███   ███          \033[1mChipset: \033[0m\E[37;40m$chips"
+echo -e "\E[32;40m         ███   ███          \033[1mCPU: \033[0m\E[37;40m$cpuid"
+echo -e "\E[32;40m         ███   ███          \033[1mMemory: \033[0m\E[37;40m$ram"
+
+echo -e '\E[37;40m'
+
+
+#Screenshot taking
+if [[ "$root" == "1" ]]; then
+case "$1" in
+ch)
+sleep 1&&screencap -p /sdcard/sfa-console.png
+am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
+;;
+c)
+sleep 1&&screencap -p /sdcard/sfa-console.png
+;;
+h)
+am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
+;;
+hc)
+sleep 1&&screencap -p /sdcard/sfa-console.png
+am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
+;;
+esac
+elif [[ "$1" != "" ]]; then
+echo "Required root acces for screenshot"
+fi
+
+
+
+exit 0

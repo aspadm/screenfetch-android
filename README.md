@@ -26,3 +26,8 @@ Usage: sfa <-h>    - show help
                       c - console
                       h - homescreen
 Example: sfa ch - show system info and take 2 screenshot to your device memory (/sdcard)
+
+Dependings:
+terminal emulator
+busybox [[ - if your system not contain it
+root access - for correct work (launcher detect) and for screenshots

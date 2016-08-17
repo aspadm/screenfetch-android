@@ -1,19 +1,32 @@
-#Screenfetch for Android by aspadm (2016)
+#Screenfetch for Android by aspadm(c)2016
 #MIT license
 #dependings: root(for screenshots), busybox(?)
-sfav="0.1.0 alpha"
+#Used: cat, echo, ls, pm, grep, [[, clear, input, screencap, getprop, let, dumpsys, am
+sfav="0.1.1 alpha"
+
+
 
 #Help section
-if [[ "$1" == '-h' ]]; then
+if [[ "$1" == -*h* ]]; then
 echo "Screenfetch for Android v$sfav"
-echo "Aspadm's work, MIT license"
+echo "(c)Aspadm 2016, MIT license"
 echo
-echo "usage: sfa <-h>    - show help (this message)"
-echo "   or: sfa         - show system info"
-echo "   or: sfa <c><h>  - also take screenshot(need root)"
-echo "                      c - console"
-echo "                      h - homescreen"
-echo "example: sfa ch - show system info and take 2 screenshot to your /sdcard"
+echo "usage: sfa <-hctsv>"
+echo " h - show help (this message)"
+echo " v - show version and exit"
+echo " c - also take screenshot (need root)"
+echo " s - show system info with simple no utf8 logo"
+echo " t - as is prev, but without color (simple text)" 
+echo
+echo "example: sfa -tc - show textual sysinfo and take 2 screenshot to your /sdcard"
+echo "         sfa     - just show sysinfo (with colored utf8 logo)"
+exit 0
+fi
+
+
+#Version
+if [[ "$1" == -*v* ]]; then
+echo "Screenfetch for Android v$sfav"
 exit 0
 fi
 
@@ -25,6 +38,8 @@ clear
 
 #Detection section
 model=$(getprop ro.product.manufacturer)" "$(getprop ro.product.model)
+#Uncomment next string, if you see "Device: <brand> <brand-name>"
+#model=$(getprop ro.product.model)
 
 
 usern=$(id -u)
@@ -144,15 +159,16 @@ fi
 
 cpuid=$(cat /proc/cpuinfo|grep "Hardware")
 cpuid=${cpuid##?*:}
-cpuc=$(cat /proc/cpuinfo|grep -c "Features")
+cpuc=$(cat /sys/devices/system/cpu/kernel_max)
 cpuf=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq)
 
 let "cpuf/=1000"
 cpuf=$cpuf"MHz"
 
-if [[ $cpuc ==  "1" ]]; then
+if [[ $cpuc ==  "0" ]]; then
 cpuid=$cpuid' @ '$cpuf
 else
+let "cpuc+=1"
 cpuid=$cpuid' ('$cpuc') @'$cpuf
 fi
 
@@ -191,7 +207,7 @@ launcher=${launcher%%/*?}
 
 
 case "$launcher" in
-com.android.launcher)
+com.android*)
 launcher="Stock Android"
 ;;
 com.example)
@@ -277,9 +293,50 @@ ram=$ramf'MB / '$ram"MB"
 
 
 #Info printing
-echo -e '\E[32;40m'
 
-echo -e "\E[32;40m         ╲▂▃▄▄▄▃▂╱          \033[1m$USER@$HOSTNAME\033[0m "
+
+if [[ "$1" == -*t* ]]; then
+
+#Text without color
+echo
+echo  "         \__nnn__/          $USER@$HOSTNAME"
+echo  "        nnHHHHHHHnn         ($usern@$hostn)"
+echo  "       nHH[]HHH[]HHn        OS: $os"
+echo  "       HHHHHHHHHHHHH        Kernel: $ker"
+echo  "   /H\ nnnnnnnnnnnnn /H\    Uptime: $upt"
+echo  "   MHN NHHHHHHHHHHHN MHN    Packages: $instp"
+echo  "   MHN NHHHHHHHHHHHN MHN    Busybox: $bbx"
+echo  "   MHN NHHHHHHHHHHHN MHN    Device: $model"
+echo  "   MHN NHHHHHHHHHHHN MHN    Resolution: $disp"
+echo  "       \HHHHHHHHHHH/        Launcher: $launcher"
+echo  "         IHH   HHI          Chipset: $chips"
+echo  "         IHH   HHI          CPU: $cpuid"
+echo  "         IHH   HHI          Memory: $ram"
+echo
+
+elif [[ "$1" == -*s* ]]; then
+
+#Colored text
+echo
+echo -e "\E[32;40m\033[1m         \__nnn__/          $USER@$HOSTNAME"
+echo -e "\E[32;40m\033[1m        nnHHHHHHHnn         \033[0m\E[32;40m($usern@$hostn)"
+echo -e "\E[32;40m\033[1m       nHH[]HHH[]HHn        OS: \033[0m\E[37;40m$os"
+echo -e "\E[32;40m\033[1m       HHHHHHHHHHHHH        Kernel: \033[0m\E[37;40m$ker"
+echo -e "\E[32;40m\033[1m   /H\ nnnnnnnnnnnnn /H\    Uptime: \033[0m\E[37;40m$upt"
+echo -e "\E[32;40m\033[1m   MHN NHHHHHHHHHHHN MHN    Packages: \033[0m\E[37;40m$instp"
+echo -e "\E[32;40m\033[1m   MHN NHHHHHHHHHHHN MHN    Busybox: \033[0m\E[37;40m$bbx"
+echo -e "\E[32;40m\033[1m   MHN NHHHHHHHHHHHN MHN    Device: \033[0m\E[37;40m$model"
+echo -e "\E[32;40m\033[1m   MHN NHHHHHHHHHHHN MHN    Resolution: \033[0m\E[37;40m$disp"
+echo -e "\E[32;40m\033[1m       \HHHHHHHHHHH/        Launcher: \033[0m\E[37;40m$launcher"
+echo -e "\E[32;40m\033[1m         IHH   HHI          Chipset: \033[0m\E[37;40m$chips"
+echo -e "\E[32;40m\033[1m         IHH   HHI          CPU: \033[0m\E[37;40m$cpuid"
+echo -e "\E[32;40m\033[1m         IHH   HHI          Memory: \033[0m\E[37;40m$ram"
+echo -e '\E[37;40m\033[0m'
+else
+
+#utf8 colored logo
+echo -e '\E[32;40m'
+echo -e "\E[32;40m         ╲▂▃▄▄▄▃▂╱          \033[1m$USER@$HOSTNAME\033[0m"
 echo -e "\E[32;40m        ▄▇███████▇▄         ($usern@$hostn)"
 echo -e "\E[32;40m       \E[30;42m▌\E[32;47m██▃█████▃██\E[32;40m▌        \033[1mOS: \033[0m\E[37;40m$os"
 echo -e "\E[32;40m       █████████████        \033[1mKernel: \033[0m\E[37;40m$ker"
@@ -292,32 +349,19 @@ echo -e "\E[32;40m       █████████████        \033[1mL
 echo -e "\E[32;40m         ███   ███          \033[1mChipset: \033[0m\E[37;40m$chips"
 echo -e "\E[32;40m         ███   ███          \033[1mCPU: \033[0m\E[37;40m$cpuid"
 echo -e "\E[32;40m         ███   ███          \033[1mMemory: \033[0m\E[37;40m$ram"
+echo -e '\E[37;40m\033[0m'
 
-echo -e '\E[37;40m'
-
+fi
 
 #Screenshot taking
 if [[ "$root" == "1" ]]; then
-case "$1" in
-ch)
+if [[ "$1" == -*c* ]]; then
 sleep 1&&screencap -p /sdcard/sfa-console.png
 am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
-;;
-c)
-sleep 1&&screencap -p /sdcard/sfa-console.png
-;;
-h)
-am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
-;;
-hc)
-sleep 1&&screencap -p /sdcard/sfa-console.png
-am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
-;;
-esac
+fi
 elif [[ "$1" != "" ]]; then
 echo "Required root acces for screenshot"
 fi
-
 
 
 exit 0

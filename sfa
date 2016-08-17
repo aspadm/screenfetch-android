@@ -1,8 +1,8 @@
-#Screenfetch for Android by aspadm(c)2016
+#Screenfetch for Android (c)aspadm, 2016
 #MIT license
 #dependings: root(for screenshots), busybox(?)
 #Used: cat, echo, ls, pm, grep, [[, clear, input, screencap, getprop, let, dumpsys, am
-sfav="0.1.1 alpha"
+sfav="1.0.1"
 
 
 
@@ -14,7 +14,7 @@ echo
 echo "usage: sfa <-hctsv>"
 echo " h - show help (this message)"
 echo " v - show version and exit"
-echo " c - also take screenshot (need root)"
+echo " c - also take screenshots of console/homescreen (need root)"
 echo " s - show system info with simple no utf8 logo"
 echo " t - as is prev, but without color (simple text)" 
 echo
@@ -354,13 +354,13 @@ echo -e '\E[37;40m\033[0m'
 fi
 
 #Screenshot taking
-if [[ "$root" == "1" ]]; then
 if [[ "$1" == -*c* ]]; then
+if [[ "$root" == "1" ]]; then
 sleep 1&&screencap -p /sdcard/sfa-console.png
 am start -a android.intent.action.MAIN -c android.intent.category.HOME&&sleep 1&&screencap -p /sdcard/sfa-homescreen.png
+else
+echo "Need root access for screenshot"
 fi
-elif [[ "$1" != "" ]]; then
-echo "Required root acces for screenshot"
 fi
 
 

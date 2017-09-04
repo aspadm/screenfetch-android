@@ -2,7 +2,7 @@
 #MIT license
 #dependings: root(for screenshots), busybox(?)
 #Used: cat, echo, ls, pm, grep, [[, clear, input, screencap, getprop, let, dumpsys, am
-sfav="1.0.1"
+sfav="1.0.2"
 
 
 
@@ -124,6 +124,12 @@ kname=Marshmallow
 ;;
 24)
 kname=Nougat
+;;
+25)
+kname=Nougat
+;;
+26)
+kname=Oreo
 ;;
 esac
 
@@ -269,6 +275,9 @@ launcher="C Launcher"
 ;;
 com.actionlauncher*)
 launcher="Action Launcher"
+;;
+com.google.android.apps.nexuslauncher)
+launcher="Pixel Launcher"
 ;;
 *)
 if [[ "$launcher" == "" ]]; then

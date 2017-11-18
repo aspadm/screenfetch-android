@@ -279,6 +279,12 @@ launcher="Action Launcher"
 com.google.android.apps.nexuslauncher)
 launcher="Pixel Launcher"
 ;;
+is.shortcut)
+launcher="Evie launcher"
+;;
+ohi.andre.consolelauncher)
+launcher="T-UI"
+;;
 *)
 if [[ "$launcher" == "" ]]; then
 launcher="can't detect"

@@ -1,8 +1,10 @@
+#!/bin/sh
+
 #Screenfetch for Android (c)aspadm, 2016
 #MIT license
 #dependings: root(for screenshots), busybox(?)
 #Used: cat, echo, ls, pm, grep, [[, clear, input, screencap, getprop, let, dumpsys, am
-sfav="1.0.2"
+sfav="1.0.3"
 
 
 
@@ -131,6 +133,9 @@ kname=Nougat
 26)
 kname=Oreo
 ;;
+27)
+kname=Oreo
+;;
 esac
 
 kname=" "$kname
@@ -223,6 +228,9 @@ com.asus.launcher)
 launcher="ZenUI Launcher"
 ;;
 com.cyanogenmod.trebuchet)
+launcher="Trebuchet Launcher"
+;;
+org.lineageos.trebuchet)
 launcher="Trebuchet Launcher"
 ;;
 org.adw.launcher)

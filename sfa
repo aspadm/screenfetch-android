@@ -4,7 +4,7 @@
 #MIT license
 #dependings: root(for screenshots), busybox(?)
 #Used: cat, echo, ls, pm, grep, [[, clear, input, screencap, getprop, let, dumpsys, am
-sfav="1.0.3"
+sfav="1.0.4"
 
 
 
@@ -135,6 +135,9 @@ kname=Oreo
 ;;
 27)
 kname=Oreo
+;;
+28)
+kname=Pie
 ;;
 esac
 
@@ -292,6 +295,9 @@ launcher="Evie launcher"
 ;;
 ohi.andre.consolelauncher)
 launcher="T-UI"
+;;
+com.miui.mihome*)
+launcher="MI launcher"
 ;;
 *)
 if [[ "$launcher" == "" ]]; then
